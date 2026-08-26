@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stratum — O&G Program Toolkit</title>
+<style>
+  :root {
+    --bg: #0b0e12;
+    --surface: #14181f;
+    --raised: #1b212a;
+    --fg: #ecece8;
+    --muted: #8b919a;
+    --subtle: #6a717c;
+    --primary: #9aada8;
+    --primary-fg: #0b0e12;
+    --border: #2a313c;
+    --warn: #c4a574;
+    --success: #7d9e86;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; line-height: 1.5; min-height: 100%; }
+  h1, h2 { font-family: Newsreader, "Times New Roman", serif; font-weight: 500; text-wrap: balance; }
+  button { font-family: inherit; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: default; }
+  .layout { display: flex; min-height: 100dvh; }
+  .sidebar { width: 18rem; border-right: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; }
+  .brand { padding: 1.25rem 1rem 1rem; }
+  .brand h2 { margin: 0; font-size: 1.35rem; }
+  .brand p { margin: 0; font-size: .75rem; color: var(--subtle); }
+  .prog { margin: 0 1rem 1rem; padding: .75rem; background: var(--raised); border-radius: 8px; }
+  .bar { height: 6px; background: var(--raised); outline: 1px solid var(--border); border-radius: 99px; overflow: hidden; background: #11151b; }
+  .bar > i { display: block; height: 100%; background: var(--primary); width: 0; }
+  .nav button { width: 100%; text-align: left; background: none; border: 0; border-left: 2px solid transparent; color: var(--muted); padding: .7rem 1rem; display: flex; gap: .75rem; align-items: center; font-size: .9rem; }
+  .nav button.on { border-left-color: var(--primary); background: var(--raised); color: var(--fg); }
+  .num { width: 1.4rem; height: 1.4rem; border-radius: 99px; background: var(--raised); display: grid; place-items: center; font-size: .7rem; font-weight: 600; }
+  .nav button.on .num { background: var(--primary); color: var(--primary-fg); }
+  .num.done { background: var(--success); color: var(--primary-fg); }
+  .side-actions { padding: 1rem; border-top: 1px solid var(--border); display: grid; gap: .5rem; }
+  .btn { height: 2.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--raised); color: var(--fg); font-weight: 500; font-size: .875rem; }
+  .btn.primary { background: var(--primary); color: var(--primary-fg); border-color: transparent; }
+  .btn.ghost { background: transparent; }
+  main { flex: 1; overflow: auto; }
+  .inner { max-width: 46rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .banner { background: var(--raised); border-radius: 12px; padding: 1rem 1.25rem; }
+  .banner .row { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+  .chip { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; background: color-mix(in oklab, var(--primary) 18%, transparent); color: var(--primary); border-radius: 99px; padding: .15rem .55rem; }
+  .chip.warn { background: color-mix(in oklab, var(--warn) 18%, transparent); color: var(--warn); }
+  .card { border: 1px solid var(--border); background: var(--surface); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.25rem; }
+  .card.warn { border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); }
+  .list { list-style: none; padding: 0; margin: 0; }
+  .list li { display: flex; gap: .75rem; align-items: flex-start; padding: .7rem 0; border-bottom: 1px solid var(--border); }
+  .list li:last-child { border-bottom: 0; }
+  .list label { cursor: pointer; flex: 1; font-size: .925rem; }
+  input[type=checkbox] { width: 1.1rem; height: 1.1rem; margin-top: .15rem; accent-color: var(--primary); }
+  .home { max-width: 56rem; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  .kicker { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--primary); font-weight: 500; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .75rem; margin-top: 1rem; }
+  .tile { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.15rem; color: inherit; }
+  .tile:hover { border-color: color-mix(in oklab, var(--primary) 45%, var(--border)); background: var(--raised); }
+  .tile h3 { margin: .6rem 0 .25rem; font-size: 1.1rem; }
+  .tile p { margin: 0; color: var(--muted); font-size: .85rem; }
+  .muted { color: var(--muted); }
+  .subtle { color: var(--subtle); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; }
+  .nav-btns { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+  .topbar { display: none; border-bottom: 1px solid var(--border); padding: .75rem 1rem; align-items: center; gap: .75rem; }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .sidebar.open { display: flex; position: fixed; inset: 0 auto 0 0; z-index: 20; }
+    .topbar { display: flex; }
+    .scrim { display: none; position: fixed; inset: 0; background: #0008; z-index: 19; }
+    .scrim.on { display: block; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+  <div class="home">
+    <p class="kicker">Oil and gas program command</p>
+    <h1 style="font-size:clamp(2rem,5vw,3rem);margin:.5rem 0 1rem;line-height:1.15">Set up the program. Keep running it.</h1>
+    <p class="muted">Loading toolkit…</p>
+  </div>
+</div>
+<script>
+const PHASES = [
+  { id: 0, title: "Leadership and vision alignment", short: "Leadership" },
+  { id: 1, title: "Current-state assessment", short: "Assessment" },
+  { id: 2, title: "Strategy, scope, and business case", short: "Strategy" },
+  { id: 3, title: "Operating model, governance, and talent", short: "Org & talent" },
+  { id: 4, title: "Execution planning and risk", short: "Planning" },
+  { id: 5, title: "Implement, pilot, and capture value", short: "Execute" },
+  { id: 6, title: "Scale, embed, and continuous management", short: "Continuous" }
+];
+
+const PROGRAMS = {
+  dx: { name: "Digital transformation", shortName: "DX", tagline: "Enterprise-wide change in how the company operates, decides, and creates value.", focus: "Culture, unified data, a governed use-case portfolio, and an operating model that survives commodity cycles.", horizon: "24–48 months, value-gated waves", risks: ["Pilot purgatory with no scale path", "IT-owned program with weak operations sponsorship", "Fragmented data blocking every later use case"], kpis: ["Cost per boe / unit opex", "Unplanned downtime", "Decision cycle time", "Emissions intensity", "Percent of high-value decisions using live data"] },
+  erp: { name: "ERP program", shortName: "ERP", tagline: "Core process and transactional backbone. Process and data first, software second.", focus: "Process harmonization, master data, cutover, training, and post-go-live hypercare with finance and operations ownership.", horizon: "18–36 months including hypercare", risks: ["Replicating legacy process clutter in the new system", "Weak master data and cutover rehearsals", "Underfunded change and training"], kpis: ["Close cycle time", "Invoice / joint-interest accuracy", "Manual journal volume", "User adoption by role", "Hypercare ticket burn-down"] },
+  etrm: { name: "ETRM", shortName: "ETRM", tagline: "Trading, risk, and commercial systems at the intersection of markets, operations, and finance.", focus: "Deal capture, positions, risk analytics, market data, regulatory controls, and tight links to physical ops and ERP.", horizon: "12–24 months by commodity book", risks: ["Shadow books outside the system of record", "Market-data and valuation mismatches", "Controls that traders work around"], kpis: ["T+0 / T+1 position completeness", "Limit-breach response time", "P&L explain quality", "Failed deal / unmatched volume", "Audit exceptions"] },
+  ai: { name: "AI / advanced analytics", shortName: "AI", tagline: "From pilots to production systems that change operating and commercial decisions.", focus: "Data readiness, model governance, MLOps, domain embedding, productionization, and continuous value and performance monitoring.", horizon: "Use-case waves of 3–9 months", risks: ["Models that never leave the notebook", "No owner after the data-science team moves on", "Operational decisions without a human override path"], kpis: ["Value vs baseline per use case", "Model uptime and drift alerts", "Time from insight to action", "Percent of predictions used in the work process", "Retrain / review cadence adherence"] },
+  twin: { name: "Digital twin and IoT", shortName: "Twin", tagline: "Virtual assets and processes fed by live and historical data for simulation and decisions.", focus: "Sensor and historian quality, model fidelity matched to use cases, control-system integration, and operator adoption.", horizon: "Asset-by-asset, 6–18 months to first production use", risks: ["Pretty 3D with no decision workflow", "Fidelity that is either too low or too expensive", "Latency or OT connectivity that operators cannot trust"], kpis: ["Operator weekly active use", "Scenario cycle time", "Unplanned events detected early", "Energy / yield improvement on twin-managed units", "Data completeness for modeled tags"] },
+  apm: { name: "Predictive maintenance / APM", shortName: "APM", tagline: "Move critical equipment from reactive and calendar-based work to condition-based and predictive.", focus: "Failure-mode understanding, sensor strategy, remaining-useful-life models, and integration into the CMMS work process.", horizon: "6–12 months per critical equipment class", risks: ["Alerts that maintenance ignores", "Models that do not transfer across fields or trains", "No link from prediction to a work order"], kpis: ["Unplanned downtime on covered assets", "Emergency vs planned work ratio", "Maintenance cost on covered class", "Alert precision / false-positive rate", "Work-order conversion from predictions"] },
+  ioc: { name: "Integrated operations", shortName: "IOC", tagline: "Remote or centralized decision environments combining live data, collaboration, and analytics.", focus: "Decision rights between field and center, real-time data quality, collaboration design, and a new way of working — not only a room.", horizon: "12–24 months including operating-model change", risks: ["A control room that is a video wall of unread dashboards", "Unclear who decides: field vs center", "Ignoring contractor and night-shift workflows"], kpis: ["Time to detect and act on deviations", "Site visits avoided without safety regression", "Production opportunity capture", "Handover quality scores", "Decision-rights exceptions"] },
+  cyber: { name: "Cybersecurity / OT security", shortName: "OT security", tagline: "Protect operational technology and critical infrastructure while still enabling digital work.", focus: "OT inventory, segmentation, monitoring, incident response, governance, and changes that do not jeopardize production or safety systems.", horizon: "Ongoing program with 90-day hardening sprints", risks: ["IT controls copied onto OT and breaking process", "Unknown assets and flat networks", "Tabletop plans that have never been exercised"], kpis: ["OT asset inventory coverage", "Segmented vs flat network share", "Mean time to detect on OT", "Patch / compensating-control SLA", "Exercise findings closed"] },
+  custom: { name: "Custom / other program", shortName: "Custom", tagline: "Same disciplined framework for any major system or transformation program in oil and gas.", focus: "Apply the common phases and adapt non-negotiables to your specific context.", horizon: "Set from the business case, then gate by value", risks: ["Scope that is actually several programs", "No named operational owner after go-live", "Benefits that cannot be measured against a baseline"], kpis: ["Stated outcome metrics from the charter", "Stage-gate pass rate", "Adoption of the new way of working", "Residual risk vs appetite", "Value captured vs case"] }
+};
+
+const BASE = {
+  0: { objective: "Secure visible, sustained executive sponsorship and a shared definition of success that survives commodity-price cycles.", activities: ["Name executive sponsor(s) with real authority — operations leadership, not only IT or digital.", "Draft a one-page charter linking the program to strategy, HSE, and energy-transition goals.", "Define three to five outcome statements in operational language (cost/boe, uptime, emissions, cycle time).", "Stand up a steering committee with decision rights, membership, and a fixed cadence.", "Brief the broader leadership team and the operational stakeholders who will live with the change.", "Agree the funding philosophy (ring-fenced or value-gated) so the program is not the first cut in a downturn."], nonNeg: ["Named executive sponsor with written commitment and time allocation.", "Approved program charter with outcomes and success metrics.", "Steering-committee charter: membership, decision rights, cadence.", "Initial value hypothesis signed by finance and operations."], tips: "In oil and gas, sponsorship must include operations. Programs owned only by the technology function almost never scale past pilots." },
+  1: { objective: "Understand the true starting point — data, processes, systems, capabilities, culture, and constraints — before designing solutions.", activities: ["Map the current systems landscape (OT, IT, data platforms, point solutions) and the integration points that matter.", "Assess data quality, access, ownership, and readiness for the intended use cases.", "Document the processes and decision points the program will change.", "Evaluate skills, roles, and cultural readiness, including contractors and remote crews.", "Capture regulatory, HSE, cybersecurity, and production-continuity constraints.", "Record baseline metrics with sources so later value claims can be proven."], nonNeg: ["Documented current-state systems and data landscape.", "Baseline metrics with data sources for the primary success measures.", "Risk and constraint register covering cyber, HSE, regulatory, and legacy OT.", "Stakeholder map and first-pass change-impact assessment."], tips: "Do not skip the data reality check. Most AI, twin, and analytics failures in this industry start with fragmented or inaccessible data, not weak models." },
+  2: { objective: "Turn vision into a governed scope, a sequenced roadmap, and a quantified case that can be steered.", activities: ["Write in-scope and out-of-scope, plus the process for changing either.", "Prioritize use cases or workstreams by value, feasibility, data readiness, and operational risk.", "Build a phased roadmap (pilot → scale → embed) with stage gates tied to measured value.", "Quantify the business case with conservative assumptions and oil/gas price sensitivity.", "Decide build vs buy, platform choices, and required partners.", "Define the value-tracking method: what is measured, by whom, how often, against which baseline."], nonNeg: ["Approved scope statement and written prioritization criteria.", "Phased roadmap with explicit stage gates.", "Quantified business case reviewed by finance and operations.", "Value-tracking framework ready before the first pilot."], tips: "Express benefits in terms that survive price cycles: per barrel, per operating day, uptime, maintenance cost ratio. Absolute dollars become meaningless when prices move." },
+  3: { objective: "Design the organization, decision rights, skills, and ways of working that will deliver and then sustain the program.", activities: ["Publish governance: steering, working groups, escalation paths, and a RACI for key decisions.", "Design the post-go-live operating model — who owns the solution when the project team leaves.", "Identify critical roles (product owner, data steward, domain expert, change lead) and fill or develop them.", "Write a change and communications plan that involves the front line early.", "Plan upskilling for both technical and operational staff, including contractors.", "Align incentives and performance management where the work itself is changing."], nonNeg: ["Documented governance structure and RACI.", "Named owners for the solution after go-live.", "Change-management plan with measurable adoption goals.", "Skills-gap assessment and development plan for critical roles."], tips: "Operating culture in this industry is strong and often rightly cautious. Designs that ignore experienced operations and maintenance people do not embed." },
+  4: { objective: "Create an executable plan that manages technical, operational, cyber, and change risk without stopping production.", activities: ["Build workstreams, the critical path, milestones, and a resource-loaded plan.", "Maintain a risk register with owners and mitigations — especially OT impact, cutover, and cyber.", "Define environments (dev / test / prod) and OT isolation where required.", "Plan integration, data connection or migration, and testing that includes operational scenarios.", "Write the cutover or go-live approach with rollback criteria that operations will actually use.", "Set quality gates and a definition of done for every major deliverable."], nonNeg: ["Detailed plan with critical path and committed resources.", "Risk register with explicit OT, HSE, and cyber items and mitigations.", "Go-live / cutover criteria and a rollback plan.", "Testing strategy that includes operational scenarios, not only technical tests."], tips: "On producing assets, big-bang cutovers are high risk. Prefer phased, reversible steps and a clear operational fallback." },
+  5: { objective: "Deliver working capability, prove value with real data, and create the evidence base for scale — or for a stop.", activities: ["Run the pilot or first release against the agreed success metrics and the recorded baseline.", "Measure actual value with the tracking framework, including where it missed.", "Capture lessons and refine both the solution and the work process.", "Take a formal scale / pivot / stop decision to the steering committee with evidence.", "Complete training, documentation, and handover to the operational owners.", "Close the pilot with a scale plan and a residual-risk register."], nonNeg: ["Documented pilot results versus baseline, quantitative.", "Formal scale / no-scale decision recorded by steering.", "Operational ownership accepted and a support model in place.", "Updated residual-risk register for the scale phase."], tips: "Many oil and gas programs die in pilot purgatory. Force a clear scale decision. If value is not materializing, stop or redesign rather than quietly expanding scope." },
+  6: { objective: "Leave project mode. Run a living operating capability with reviews, improvement, and value protection.", activities: ["Embed the solution in standard operating procedures and the actual decision process.", "Run monthly value reviews and a quarterly strategy/roadmap refresh with leadership visibility.", "Keep a continuous-improvement backlog owned by the operational product owner.", "Refresh the roadmap as technology, regulation, and the asset base change.", "Audit data quality, model health (if applicable), and cyber posture on a defined cadence.", "Keep the change network and skills pipeline alive so capability does not decay after go-live."], nonNeg: ["Living operating model with a named product or process owner.", "Scheduled value and health reviews with leadership visibility.", "Continuous-improvement process and backlog ownership.", "Defined metrics and review process for data quality, model health, and security posture as applicable."], tips: "The most common long-term failure is treating the program as finished at go-live. Prices, regulations, assets, and crews change. Continuous management is part of the design." }
+};
+
+const EXTRAS = {
+  dx: { 0: { activities: ["Align the DX vision with portfolio and energy-transition strategy, not only cost takeout."] }, 2: { activities: ["Create a portfolio view of initiatives with funding released only at stage gates."] }, 5: { activities: ["Track both initiative-level value and enterprise capability maturity."] } },
+  erp: { 1: { activities: ["Run a process-harmonization and master-data quality audit before design freeze."], nonNeg: ["Master-data quality baseline and ownership model."] }, 4: { activities: ["Plan data migration with multiple dress rehearsals and a freeze calendar operations can live with."], nonNeg: ["Cutover runbook with at least one full dress rehearsal recorded."] }, 5: { activities: ["Staff a hypercare window with exit criteria and residual-issue ownership."], nonNeg: ["Hypercare plan with exit criteria accepted by operations and finance."] } },
+  etrm: { 1: { activities: ["Map current deal capture, risk, settlement, and control points across desks and commodities."] }, 2: { activities: ["Put regulatory and internal risk-limit requirements into scope, not a later control add-on."], nonNeg: ["Risk-limit and regulatory-control mapping into the target system."] }, 4: { activities: ["Test position, valuation, and limit calculations under realistic market-stress scenarios."] } },
+  ai: { 1: { activities: ["Run a data-readiness assessment for each priority use case: volume, quality, labels, access, and lineage."], nonNeg: ["Written data-readiness result for the first production use case."] }, 3: { activities: ["Define model governance, inventory, owners, and monitoring responsibilities (MLOps)."], nonNeg: ["Model inventory and named operational owner per production model."] }, 6: { activities: ["Set retraining triggers, drift alerts, and a human override path for operational decisions."], nonNeg: ["Production monitoring and retraining triggers documented and staffed."] } },
+  twin: { 1: { activities: ["Assess sensor coverage, historian quality, and data latency for the target assets."] }, 2: { activities: ["Set the fidelity level required per use case (visualization vs physics-based simulation)."], nonNeg: ["Use-case-to-fidelity map signed by operations and engineering."] }, 5: { activities: ["Validate that operators use the twin inside a real decision workflow, not as a demo."] } },
+  apm: { 1: { activities: ["Rank critical equipment by consequence of failure and by data availability."] }, 2: { activities: ["Tie expected uptime and maintenance-cost benefits to named equipment classes."] }, 5: { activities: ["Integrate predictions into the existing CMMS / work-management process before claiming value."], nonNeg: ["Prediction-to-work-order path live in the maintenance system."] } },
+  ioc: { 0: { activities: ["Align decision rights between field leadership and the integrated operations center."], nonNeg: ["Written decision-rights matrix for field vs center."] }, 3: { activities: ["Redesign collaboration, shift handover, and escalation — not only the physical room."] }, 6: { activities: ["Review which decisions stay local versus centralized as capability matures."] } },
+  cyber: { 0: { activities: ["Give the board or executive risk committee visibility — this is critical infrastructure."] }, 1: { activities: ["Complete an OT asset inventory and a current network-topology baseline."], nonNeg: ["OT asset inventory covering in-scope facilities."] }, 4: { activities: ["Plan changes that minimize disruption to production and safety systems; define maintenance windows with operations."] }, 6: { activities: ["Maintain continuous monitoring, vulnerability management, and scheduled incident-response exercises."], nonNeg: ["Exercise calendar and monitoring coverage for in-scope OT."] } }
+};
+
+function content(type, phase) {
+  const b = BASE[phase], e = (EXTRAS[type] && EXTRAS[type][phase]) || {};
+  return { objective: e.objective || b.objective, activities: b.activities.concat(e.activities || []), nonNeg: b.nonNeg.concat(e.nonNeg || []), tips: e.tips || b.tips };
+}
+
+const KEY = "stratum-html-v1";
+const state = JSON.parse(localStorage.getItem(KEY) || '{"type":null,"phase":0,"progress":{}}');
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function pct() {
+  if (!state.type) return { done: 0, total: 0, p: 0 };
+  let done = 0, total = 0;
+  PHASES.forEach(p => {
+    const c = content(state.type, p.id);
+    const st = ((state.progress[state.type] || {})[p.id] || { nonNeg: {} }).nonNeg || {};
+    c.nonNeg.forEach((_, i) => { total++; if (st[i]) done++; });
+  });
+  return { done, total, p: total ? Math.round(done / total * 100) : 0 };
+}
+
+function phaseDone(id) {
+  const c = content(state.type, id);
+  const st = ((state.progress[state.type] || {})[id] || { nonNeg: {} }).nonNeg || {};
+  return c.nonNeg.every((_, i) => st[i]);
+}
+
+function getProg(phase) {
+  state.progress[state.type] = state.progress[state.type] || {};
+  state.progress[state.type][phase] = state.progress[state.type][phase] || { activities: {}, nonNeg: {} };
+  return state.progress[state.type][phase];
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, "\u0026amp;")
+    .replace(/</g, "\u0026lt;")
+    .replace(/>/g, "\u0026gt;")
+    .replace(/"/g, "\u0026quot;")
+    .replace(/'/g, "\u0026#39;");
+}
+
+function render() {
+  const root = document.getElementById("app");
+  if (!state.type) {
+    root.innerHTML = `<div class="home">
+      <p class="kicker">Oil and gas program command</p>
+      <h1 style="font-size:clamp(2rem,5vw,3rem);margin:.5rem 0 1rem;line-height:1.15">Set up the program. Keep running it.</h1>
+      <p class="muted" style="max-width:36rem">Guided setup and continuous management for DX, ERP, ETRM, AI, twins, reliability, integrated operations, and OT security. Checklists and non-negotiable deliverables save in this browser.</p>
+      <p class="subtle" style="margin-top:2rem">Choose a program type</p>
+      <div class="grid">${Object.entries(PROGRAMS).map(([id,p]) => `<button class="tile" data-type="${id}"><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p></button>`).join("")}</div>
+    </div>`;
+    root.querySelectorAll("[data-type]").forEach(b => b.onclick = () => { state.type = b.dataset.type; state.phase = 0; save(); render(); });
+    return;
+  }
+  const meta = PROGRAMS[state.type];
+  const phase = PHASES[state.phase];
+  const c = content(state.type, state.phase);
+  const st = getProg(state.phase);
+  const { done, total, p } = pct();
+  const list = (items, group, required) => items.map((item, i) => `<li>
+    <input type="checkbox" id="${group}${i}" ${st[group][i] ? "checked" : ""}>
+    <label for="${group}${i}">${esc(item)}${required ? ' <span class="chip warn">Required</span>' : ""}</label>
+  </li>`).join("");
+
+  root.innerHTML = `
+    <div class="scrim" id="scrim"></div>
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand"><h2>Stratum</h2><p>Program command</p></div>
+        <div class="prog"><div style="display:flex;justify-content:space-between;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:.4rem"><span>Non-negotiables</span><span style="color:var(--fg);font-variant-numeric:tabular-nums">${p}%</span></div>
+        <div class="bar"><i style="width:${p}%"></i></div>
+        <p class="muted" style="font-size:.75rem;margin:.5rem 0 0">${done} of ${total} complete</p></div>
+        <div style="padding:0 1rem .5rem"><span class="chip">${esc(meta.shortName)}</span></div>
+        <nav class="nav">${PHASES.map(ph => `<button data-phase="${ph.id}" class="${state.phase===ph.id?"on":""}"><span class="num ${phaseDone(ph.id)?"done":""}">${phaseDone(ph.id)?"✓":ph.id+1}</span>${esc(ph.short)}</button>`).join("")}</nav>
+        <div class="side-actions">
+          <button class="btn" id="export">Export summary</button>
+          <button class="btn ghost" id="reset">Reset this program</button>
+          <button class="btn ghost" id="change">Change program</button>
+        </div>
+      </aside>
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div class="topbar"><button class="btn ghost" id="menu" style="width:auto;padding:0 .8rem">Menu</button><strong>${esc(meta.shortName)}</strong></div>
+        <main>
+          <div class="inner">
+            <div class="banner"><div class="row"><strong>${esc(meta.name)}</strong><span class="chip">Phase ${state.phase+1} of 7</span></div><p class="muted" style="margin:.35rem 0 0;font-size:.9rem">${esc(meta.tagline)}</p></div>
+            <h1 style="font-size:1.85rem;margin:1.25rem 0 .4rem">${esc(phase.title)}</h1>
+            <p class="muted">${esc(c.objective)}</p>
+            ${state.phase===0?`<div class="card"><p class="subtle">Typical horizon</p><p>${esc(meta.horizon)}</p><p class="subtle" style="margin-top:1rem">Focus</p><p class="muted">${esc(meta.focus)}</p><p class="subtle" style="margin-top:1rem">Watch for</p><ul class="muted">${meta.risks.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>`:""}
+            <div class="card"><h2 style="margin:0 0 .25rem;font-size:1.15rem">Activities</h2><ul class="list">${list(c.activities,"activities",false)}</ul></div>
+            <div class="card warn"><h2 style="margin:0 0 .25rem;font-size:1.15rem">Non-negotiable deliverables</h2><p class="muted" style="font-size:.875rem">A phase is complete only when every item here is done.</p><ul class="list">${list(c.nonNeg,"nonNeg",true)}</ul></div>
+            <div class="card"><p class="subtle">Oil and gas considerations</p><p class="muted">${esc(c.tips)}</p>
+            ${state.phase===0?`<p class="subtle" style="margin-top:1rem">Success measures</p><ul class="muted">${meta.kpis.map(k=>`<li>${esc(k)}</li>`).join("")}</ul>`:""}
+            ${state.phase===6?`<p class="subtle" style="margin-top:1rem">Cadence after go-live</p><p class="muted"><strong>Monthly</strong> — value vs baseline, adoption, open risks.<br><strong>Quarterly</strong> — roadmap refresh, stage-gate funding, capability gaps.<br><strong>Annually</strong> — operating-model review, skills pipeline, cyber and data-quality audit.</p>`:""}
+            </div>
+            <div class="nav-btns">
+              <button class="btn" id="prev" ${state.phase===0?"disabled":""}>Previous</button>
+              <button class="btn primary" id="next" ${state.phase===6?"disabled":""}>Next phase</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>`;
+
+  root.querySelectorAll("[data-phase]").forEach(b => b.onclick = () => { state.phase = +b.dataset.phase; save(); render(); });
+  root.querySelectorAll("input[type=checkbox]").forEach(inp => {
+    inp.onchange = () => {
+      const group = inp.id.startsWith("nonNeg") ? "nonNeg" : "activities";
+      const i = +inp.id.replace(group, "");
+      getProg(state.phase)[group][i] = inp.checked;
+      save(); render();
+    };
+  });
+  document.getElementById("prev").onclick = () => { if (state.phase>0) { state.phase--; save(); render(); } };
+  document.getElementById("next").onclick = () => { if (state.phase<6) { state.phase++; save(); render(); } };
+  document.getElementById("change").onclick = () => { state.type = null; save(); render(); };
+  document.getElementById("reset").onclick = () => { if (confirm("Reset progress for this program type?")) { delete state.progress[state.type]; state.phase = 0; save(); render(); } };
+  document.getElementById("export").onclick = () => {
+    let t = `STRATUM — ${meta.name}\n${new Date().toISOString()}\n\n`;
+    PHASES.forEach(ph => {
+      const cc = content(state.type, ph.id);
+      const ss = (state.progress[state.type]||{})[ph.id] || { activities:{}, nonNeg:{} };
+      t += ph.title.toUpperCase()+"\n";
+      cc.nonNeg.forEach((n,i)=> t += `  [${ss.nonNeg&&ss.nonNeg[i]?"x":" "}] ${n}\n`);
+      t += "\n";
+    });
+    const blob = new Blob([t], { type: "text/plain" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `stratum-${state.type}-summary.txt`; a.click();
+  };
+  const menu = document.getElementById("menu");
+  const sidebar = document.getElementById("sidebar");
+  const scrim = document.getElementById("scrim");
+  if (menu) menu.onclick = () => { sidebar.classList.add("open"); scrim.classList.add("on"); };
+  if (scrim) scrim.onclick = () => { sidebar.classList.remove("open"); scrim.classList.remove("on"); };
+}
+
+render();
+</script>
+</body>
+</html>
