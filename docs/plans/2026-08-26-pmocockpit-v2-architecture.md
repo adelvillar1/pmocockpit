@@ -146,7 +146,7 @@ Items are created lazily on first program open (one insert per catalog item, `sk
 
 1. **Auth:** single shared passphrase via `APP_PASSCODE` env var + httpOnly cookie; no per-user accounts. (User decision: he is the main user.)
 2. **Hosting:** Railway prod-only, single env watching `main`. No staging. (User decision: small app, main user is the owner.)
-3. **Repo:** private GitHub repo `pmocockpit`. (Documented default.)
+3. **Repo:** public GitHub repo `pmocockpit` at creation; user will flip to private manually; **Railway linking must wait until the repo is private** (user decision 2026-08-26: "railway only after the repo is private").
 
 ## Risks
 

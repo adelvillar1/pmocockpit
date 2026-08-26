@@ -73,11 +73,11 @@ parent_plan: docs/plans/2026-08-26-pmocockpit-v2-architecture.md
 
 ## Task 5: GitHub repo + push
 
-**Objective:** Remote exists, code pushed.
+**Objective:** Remote exists, code pushed. **Repo is created PUBLIC per user decision; user will flip it to private manually. Railway linking (Task 10) is blocked until the repo is private — verify visibility before starting Task 10.**
 
 **Steps:**
-1. `gh repo create adelvillar1/pmocockpit --private --source . --push` (SSH protocol per gh auth config).
-2. Verify: `gh repo view adelvillar1/pmocockpit --json visibility,defaultBranchRef` → PRIVATE, main.
+1. `gh repo create adelvillar1/pmocockpit --public --source . --push` (SSH protocol per gh auth config).
+2. Verify: `gh repo view adelvillar1/pmocockpit --json visibility,defaultBranchRef` → PUBLIC, main.
 
 **Verify:** `git remote -v` shows origin; `git log origin/main` has all commits.
 
