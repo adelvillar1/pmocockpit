@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Program {
+  id        String   @id @default(cuid())
+  typeId    String
+  name      String
+  context   String?
+  status    String   @default("active") // active | paused | complete | archived
+  createdAt DateTime @default(now())
+
+  items  ChecklistItem[]
+  events ProgramEvent[]
+
+  @@index([status])
+}
+
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  programId   String
+  program     Program   @relation(fields: [programId], references: [id], onDelete: Cascade)
+  itemKey     String // stable slug, e.g. "p0.sponsor-named" — never an array index
+  group       String // "activities" | "nonNeg"
+  status      String    @default("todo") // todo | done | na
+  notes       String?
+  owner       String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([programId, itemKey])
+  @@index([programId])
+}
+
+model ProgramEvent {
+  id        String   @id @default(cuid())
+  programId String
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  kind      String // item_done | item_reopened | item_na | note_edited | phase_completed | status_changed | program_created
+  itemKey   String?
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([programId, createdAt])
+}
