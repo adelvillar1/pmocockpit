@@ -1,0 +1,337 @@
+/* Report view styles — on screen the report uses the app's dark design
+   language (tokens from src/styles/tokens.css); @media print at the bottom
+   switches to a black-on-white, page-broken document. */
+
+.report {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ---------- toolbar (hidden when printing) ---------- */
+
+.report-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.report-back {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.report-back:hover {
+  color: var(--fg);
+}
+
+.rp-btn {
+  height: 2.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--raised);
+  color: var(--fg);
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0 1rem;
+}
+
+.rp-btn:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+
+/* ---------- header ---------- */
+
+.report-header {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.report-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.report-title {
+  font-size: 1.9rem;
+  margin: 0.35rem 0 0.75rem;
+  line-height: 1.2;
+}
+
+.report-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.report-chip {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in oklab, var(--primary) 18%, transparent);
+  color: var(--primary);
+  border-radius: 99px;
+  padding: 0.15rem 0.55rem;
+  white-space: nowrap;
+}
+
+.report-context {
+  color: var(--muted);
+  margin: 0.75rem 0 0;
+  max-width: 46rem;
+}
+
+.report-progress {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.report-pct {
+  font-size: 2rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.report-progress-note {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.report-generated {
+  color: var(--subtle);
+  font-size: 0.78rem;
+  margin: 1rem 0 0;
+}
+
+/* ---------- phase sections ---------- */
+
+.report-phase {
+  margin-top: 2.75rem;
+}
+
+.report-phase-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.report-phase-num {
+  flex: none;
+  width: 1.7rem;
+  height: 1.7rem;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--raised);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-phase-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.report-phase-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.report-objective {
+  color: var(--muted);
+  margin: 0.75rem 0 1.25rem;
+  max-width: 46rem;
+}
+
+.report-list-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.report-list-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.report-required {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warn);
+  border: 1px solid color-mix(in oklab, var(--warn) 45%, transparent);
+  border-radius: 99px;
+  padding: 0.1rem 0.5rem;
+}
+
+/* ---------- item tables ---------- */
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.report-table th {
+  text-align: left;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--subtle);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+}
+
+.report-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0.6rem;
+  vertical-align: top;
+}
+
+.report-table .item-cell {
+  max-width: 30rem;
+}
+
+.report-table .meta-cell {
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-status {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.report-status.done {
+  color: var(--success);
+}
+
+.report-status.na {
+  color: var(--subtle);
+}
+
+.report-status.todo {
+  color: var(--fg);
+}
+
+.report-notes {
+  margin: 0.45rem 0 0;
+  padding: 0.15rem 0 0.15rem 0.85rem;
+  border-left: 2px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+}
+
+.report-tips {
+  font-size: 0.8rem;
+  color: var(--subtle);
+  margin: 1.25rem 0 0;
+  max-width: 46rem;
+}
+
+/* ---------- footer ---------- */
+
+.report-footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--subtle);
+  font-size: 0.8rem;
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  /* Override every dark token: black text, white surfaces, light borders. */
+  body * {
+    color: #000 !important;
+    background: transparent !important;
+    border-color: #d0d0d0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .report-toolbar {
+    display: none !important;
+  }
+
+  .report {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .report-header {
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    padding: 1rem;
+  }
+
+  /* Each phase starts on its own page. */
+  .report-phase {
+    break-before: page;
+    margin-top: 0;
+  }
+
+  .report-table {
+    font-size: 0.8rem;
+  }
+
+  .report-table th {
+    border-bottom: 1px solid #999;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  .report-notes {
+    border-left: 2px solid #999;
+  }
+
+  a {
+    text-decoration: none !important;
+  }
+}

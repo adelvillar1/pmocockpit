@@ -224,6 +224,13 @@ export function ProgramWorkspace({
 
   const sideActions = (
     <>
+      <a
+        href={`/program/${program.id}/report`}
+        className="ws-btn"
+        style={linkButtonStyle}
+      >
+        Report
+      </a>
       <button
         type="button"
         className="ws-btn"

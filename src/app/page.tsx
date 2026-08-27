@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { trpc } from "@/trpc-client";
 import { PHASES, PROGRAM_TYPES } from "@/content/catalog";
 
@@ -19,6 +19,54 @@ export default function Home() {
       router.push(`/program/${id}`);
     },
   });
+
+  const importFileRef = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const importProgram = trpc.programs.importJson.useMutation({
+    onSuccess: ({ id }) => {
+      router.push(`/program/${id}`);
+    },
+    onError: (error) => {
+      setImporting(false);
+      setImportError(error.message);
+    },
+  });
+
+  const pickImportFile = () => {
+    setImportError(null);
+    importFileRef.current?.click();
+  };
+
+  const onImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setImporting(true);
+    setImportError(null);
+    try {
+      const text = await file.text();
+      const payload = JSON.parse(text) as {
+        items?: { dueDate?: unknown; completedAt?: unknown }[];
+      };
+      // The export writes dates as ISO strings; the import schema expects Date.
+      if (Array.isArray(payload.items)) {
+        for (const item of payload.items) {
+          if (typeof item?.dueDate === "string") item.dueDate = new Date(item.dueDate);
+          if (typeof item?.completedAt === "string")
+            item.completedAt = new Date(item.completedAt);
+        }
+      }
+      importProgram.mutate(payload as never);
+    } catch (error) {
+      setImporting(false);
+      setImportError(
+        error instanceof SyntaxError
+          ? "That file is not valid JSON."
+          : "Could not read the selected file.",
+      );
+    }
+  };
 
   const openCreate = () => {
     setCreating(true);
@@ -66,11 +114,31 @@ export default function Home() {
       <div className="section-head">
         <p className="subtle">Programs</p>
         {!creating && (
-          <button type="button" className="btn primary" onClick={openCreate}>
-            New program
-          </button>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={pickImportFile}
+              disabled={importing}
+              data-testid="import"
+            >
+              {importing ? "Importing…" : "Import"}
+            </button>
+            <input
+              ref={importFileRef}
+              type="file"
+              accept="application/json,.json"
+              style={{ display: "none" }}
+              onChange={(e) => void onImportFile(e)}
+            />
+            <button type="button" className="btn primary" onClick={openCreate}>
+              New program
+            </button>
+          </div>
         )}
       </div>
+
+      {importError && <p className="form-error">{importError}</p>}
 
       {creating && (
         <section className="create">
