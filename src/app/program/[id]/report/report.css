@@ -284,9 +284,9 @@
     background: #fff !important;
   }
 
-  /* Override every dark token: black text, white surfaces, light borders. */
+  /* Override every dark token: near-black text, white surfaces, light borders. */
   body * {
-    color: #000 !important;
+   color: #1a1a18 !important;
     background: transparent !important;
     border-color: #d0d0d0 !important;
     box-shadow: none !important;
