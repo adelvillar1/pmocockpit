@@ -1,0 +1,368 @@
+/* Global app styles — all colors via var(--*) from tokens.css. */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.5;
+  min-height: 100%;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display), "Times New Roman", serif;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- layout shell ---------- */
+
+.home {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.signout {
+  background: none;
+  border: 0;
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+  color: var(--subtle);
+}
+
+.signout:hover {
+  color: var(--muted);
+}
+
+.kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 1rem 0 0;
+}
+
+.headline {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0.5rem 0 1rem;
+  line-height: 1.15;
+}
+
+.lede {
+  color: var(--muted);
+  max-width: 36rem;
+  margin: 0;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  height: 2.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--raised);
+  color: var(--fg);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0 1rem;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+
+.btn.primary {
+  background: var(--primary);
+  color: var(--primary-fg);
+  border-color: transparent;
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+/* ---------- section headers ---------- */
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.75rem;
+}
+
+.subtle {
+  color: var(--subtle);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- create form ---------- */
+
+.create {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.tile {
+  text-align: left;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  color: inherit;
+}
+
+.tile:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+
+.tile.selected {
+  border-color: var(--primary);
+}
+
+.tile h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.tile p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.field {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  max-width: 26rem;
+}
+
+.field label {
+  color: var(--subtle);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.input {
+  height: 2.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--raised);
+  color: var(--fg);
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: var(--subtle);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.form-error {
+  color: var(--warn);
+  font-size: 0.85rem;
+  margin: 0.75rem 0 0;
+}
+
+/* ---------- program list ---------- */
+
+.programs {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.program-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  color: inherit;
+}
+
+.program-row:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  background: var(--raised);
+}
+
+.program-main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.program-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.program-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chip {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in oklab, var(--primary) 18%, transparent);
+  color: var(--primary);
+  border-radius: 99px;
+  padding: 0.15rem 0.55rem;
+}
+
+.status {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+/* 7-segment progress strip: one functional segment per phase */
+.strip {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.seg {
+  width: 14px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--raised);
+  outline: 1px solid var(--border);
+}
+
+.seg.done {
+  background: var(--success);
+  outline-color: transparent;
+}
+
+.pct {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.4rem;
+  text-align: right;
+  flex: none;
+}
+
+/* ---------- empty state ---------- */
+
+.empty {
+  margin-top: 0.75rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.empty p {
+  color: var(--muted);
+  margin: 0.4rem 0 1.25rem;
+  font-size: 0.9rem;
+}
+
+.notice {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .program-row {
+    flex-wrap: wrap;
+  }
+
+  .program-main {
+    flex-basis: 100%;
+  }
+
+  .section-head {
+    flex-wrap: wrap;
+  }
+}

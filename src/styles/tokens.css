@@ -1,0 +1,15 @@
+/* Design tokens — v1 palette, single source of truth for all colors.
+   No hardcoded hex values may appear outside this file. */
+:root {
+  --bg: #0b0e12;
+  --surface: #14181f;
+  --raised: #1b212a;
+  --fg: #ecece8;
+  --muted: #8b919a;
+  --subtle: #6a717c;
+  --primary: #9aada8;
+  --primary-fg: #0b0e12;
+  --border: #2a313c;
+  --warn: #c4a574;
+  --success: #7d9e86;
+}
