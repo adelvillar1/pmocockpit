@@ -54,7 +54,7 @@ for (const id of [0, 1, 2, 3, 4, 5, 6]) {
 }
 
 // ---- program types ----
-if (PROGRAM_TYPES.length !== 9) note(`PROGRAM_TYPES must have 9 entries, got ${PROGRAM_TYPES.length}`);
+if (PROGRAM_TYPES.length < 9) note(`PROGRAM_TYPES must have at least 9 entries (the 9 v1 types), got ${PROGRAM_TYPES.length}`);
 const declaredTypeIds = new Set<string>();
 for (const t of PROGRAM_TYPES) {
   if (declaredTypeIds.has(t.typeId)) note(`PROGRAM_TYPES: duplicate typeId "${t.typeId}"`);
@@ -143,6 +143,9 @@ if (verifyV1) {
     strings.push({ where: `PHASES ${p.id} short`, value: p.short });
   }
   for (const t of PROGRAM_TYPES) {
+    // v2-native types (added post-v1) have no v1 source to verify against.
+    const V1_TYPES = new Set(["dx", "erp", "etrm", "ai", "twin", "apm", "ioc", "cyber", "custom"]);
+    if (!V1_TYPES.has(t.typeId)) continue;
     for (const field of ["name", "shortName", "tagline", "focus", "horizon"] as const) {
       strings.push({ where: `PROGRAM_TYPES ${t.typeId}.${field}`, value: t[field] });
     }
@@ -150,6 +153,9 @@ if (verifyV1) {
     t.kpis.forEach((k, i) => strings.push({ where: `PROGRAM_TYPES ${t.typeId}.kpis[${i}]`, value: k }));
   }
   for (const typeId of Object.keys(PHASE_CONTENT)) {
+    // v2-native types have no v1 source; skip their strings in the fidelity check.
+    const V1_TYPES = new Set(["dx", "erp", "etrm", "ai", "twin", "apm", "ioc", "cyber", "custom"]);
+    if (!V1_TYPES.has(typeId)) continue;
     for (const phaseStr of Object.keys(PHASE_CONTENT[typeId])) {
       const content = PHASE_CONTENT[typeId][Number(phaseStr)];
       if (!content) continue;

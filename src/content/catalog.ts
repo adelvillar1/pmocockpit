@@ -136,6 +136,16 @@ export const PROGRAM_TYPES: readonly ProgramTypeDef[] = [
     kpis: ["OT asset inventory coverage", "Segmented vs flat network share", "Mean time to detect on OT", "Patch / compensating-control SLA", "Exercise findings closed"],
   },
   {
+    typeId: "pmo",
+    name: "PMO implementation",
+    shortName: "PMO",
+    tagline: "Stand up a Project, Program, and Portfolio Management Office that governs delivery without becoming bureaucracy.",
+    focus: "Charter and mandate, governance cadence, portfolio visibility, standards and templates that fit operational reality, and value tracking across every program in the house.",
+    horizon: "6–12 months to operating cadence, then continuous",
+    risks: ["Process theater: templates and gates that cost more than they return", "PMO seen as reporting police rather than delivery support", "Mandate without executive teeth — recommendations that nobody must act on", "One-size-fits-all governance applied identically to a small IT project and a major facility program"],
+    kpis: ["Portfolio on-time / on-budget delivery rate", "Stage-gate decision cycle time", "Percent of programs reporting value vs baseline", "Resource conflicts resolved before impact", "Stakeholder confidence in portfolio reporting"],
+  },
+  {
     typeId: "custom",
     name: "Custom / other program",
     shortName: "Custom",
@@ -1335,6 +1345,93 @@ export const PHASE_CONTENT: Record<string, Record<number, PhaseContent>> = {
         { slug: "p6.health-metrics-defined", text: "Defined metrics and review process for data quality, model health, and security posture as applicable." },
       ],
       tips: "The most common long-term failure is treating the program as finished at go-live. Prices, regulations, assets, and crews change. Continuous management is part of the design.",
+    },
+  },
+  pmo: {
+    0: {
+      objective: "Secure visible, sustained executive sponsorship and a shared definition of success that survives commodity-price cycles.",
+      activities: [
+        { slug: "p0.pmo-mandate-defined", text: "Define the PMO's mandate in writing: what it decides, what it recommends, what it only reports." },
+        { slug: "p0.pmo-sponsorship", text: "Secure executive sponsor for the PMO itself — the office must outrank the projects it serves on paper, or it cannot arbitrate." },
+        { slug: "p0.pmo-tailoring-philosophy", text: "Agree the tailoring philosophy up front: governance scales with project size and risk, never one-size-fits-all." },
+      ],
+      nonNeg: [
+        { slug: "p0.pmo-charter-approved", text: "PMO charter approved: mandate, decision rights, staffing, funding, and a named head with executive access." },
+      ],
+      tips: "The PMO's hardest sell is to experienced project leads who have survived bad PMOs. Lead with what the office removes (duplicate reporting, surprise escalations), not what it adds.",
+    },
+    1: {
+      objective: "Understand the true starting point — data, processes, systems, capabilities, culture, and constraints — before designing solutions.",
+      activities: [
+        { slug: "p1.pmo-project-inventory", text: "Inventory every active project and program: sponsor, stage, spend, health, and who actually tracks what today." },
+        { slug: "p1.pmo-current-methods-audit", text: "Audit existing delivery methods, templates, and reporting in use across business units — adopt before you standardize." },
+      ],
+      nonNeg: [
+        { slug: "p1.pmo-baseline-recorded", text: "Documented portfolio baseline: full project inventory with sponsors, spend, and current reporting practices." },
+      ],
+      tips: "Do not skip the data reality check. Most AI, twin, and analytics failures in this industry start with fragmented or inaccessible data, not weak models.",
+    },
+    2: {
+      objective: "Turn vision into a governed scope, a sequenced roadmap, and a quantified case that can be steered.",
+      activities: [
+        { slug: "p2.pmo-service-catalog", text: "Define the PMO service catalog: what services it offers projects (coaching, scheduling, assurance) versus control functions." },
+        { slug: "p2.pmo-tooling-decision", text: "Decide the portfolio tooling position: one system of record for stage, spend, and risk — and what it replaces." },
+      ],
+      nonNeg: [
+        { slug: "p2.pmo-operating-model-approved", text: "PMO operating model approved by sponsors: services, control points, and the governance calendar." },
+        { slug: "p2.pmo-success-metrics", text: "PMO success metrics agreed — the office is measured on portfolio outcomes, not on reports produced." },
+      ],
+      tips: "Express the PMO business case in the same terms as any other program: decisions accelerated, overruns caught early, portfolio value protected — not in artifacts delivered.",
+    },
+    3: {
+      objective: "Design the organization, decision rights, skills, and ways of working that will deliver and then sustain the program.",
+      activities: [
+        { slug: "p3.pmo-staffing-model", text: "Design the staffing model: core PMO team versus federated project leads embedded in business units." },
+        { slug: "p3.pmo-rac-i", text: "Publish the governance RACI: who gates, who escalates, who arbitrates resource conflicts between programs." },
+      ],
+      nonNeg: [
+        { slug: "p3.pmo-org-announced", text: "PMO organization announced with named roles; federated leads nominated by business-unit leadership." },
+        { slug: "p3.pmo-escalation-paths", text: "Documented escalation and arbitration paths, accepted by program sponsors." },
+      ],
+      tips: "Operating culture in this industry is strong and often rightly cautious. Designs that ignore experienced operations and maintenance people do not embed.",
+    },
+    4: {
+      objective: "Create an executable plan that manages technical, operational, cyber, and change risk without stopping production.",
+      activities: [
+        { slug: "p4.pmo-standards-built", text: "Build the minimum viable standards set: stage-gate criteria, project charter template, health-report format, risk register." },
+        { slug: "p4.pmo-pilot-wave-selection", text: "Select the pilot wave: 2-3 projects of different sizes to prove the governance model before portfolio-wide rollout." },
+        { slug: "p4.pmo-integration-plan", text: "Plan integration with existing processes (capex approvals, procurement, HSE management of change) rather than parallel bureaucracy." },
+      ],
+      nonNeg: [
+        { slug: "p4.pmo-standards-approved", text: "Standards set approved with tailoring rules — a small project follows a proportionally lighter path." },
+        { slug: "p4.pmo-pilot-committed", text: "Pilot projects committed with named sponsors and success criteria for the PMO pilot itself." },
+      ],
+      tips: "On producing assets, the PMO must speak capex and opex language. Gate criteria that ignore the field's planning cycle will be routed around within one quarter.",
+    },
+    5: {
+      objective: "Deliver working capability, prove value with real data, and create the evidence base for scale — or for a stop.",
+      activities: [
+        { slug: "p5.pmo-pilot-run", text: "Run the pilot wave through the full governance cycle: intake, stage gates, health reporting, and at least one gate decision." },
+        { slug: "p5.pmo-feedback-incorporated", text: "Collect pilot feedback from project leads and sponsors; adjust standards, cadence, and templates before scaling." },
+      ],
+      nonNeg: [
+        { slug: "p5.pmo-pilot-results", text: "Pilot results documented: what governance caught, what it cost, what project leads want changed." },
+        { slug: "p5.pmo-scale-decision", text: "Formal scale / adjust / stop decision on the PMO operating model taken to the executive sponsor." },
+      ],
+      tips: "Many oil and gas programs die in pilot purgatory. Force a clear scale decision. If value is not materializing, stop or redesign rather than quietly expanding scope.",
+    },
+    6: {
+      objective: "Leave project mode. Run a living operating capability with reviews, improvement, and value protection.",
+      activities: [
+        { slug: "p6.pmo-portfolio-cadence", text: "Operate the portfolio cadence: monthly health reviews, quarterly portfolio rebalancing, annual mandate refresh." },
+        { slug: "p6.pmo-value-tracking", text: "Track PMO value: delivery performance trend, gate decision quality, early-warning wins, and stakeholder confidence." },
+        { slug: "p6.pmo-standards-evolution", text: "Keep standards living: retire templates nobody uses, tighten gates that miss, simplify what project leads complain about with evidence." },
+      ],
+      nonNeg: [
+        { slug: "p6.pmo-operating-rhythm", text: "Operating portfolio cadence running with leadership attendance and documented decisions." },
+        { slug: "p6.pmo-annual-review", text: "Annual PMO mandate review scheduled — the office earns its existence each year, not once." },
+      ],
+      tips: "A PMO decays into ceremony within two years unless it keeps earning authority with useful decisions. The annual mandate review is the forcing function.",
     },
   },
 };
